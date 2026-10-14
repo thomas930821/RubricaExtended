@@ -1,0 +1,20 @@
+# File compilati
+*.class
+*.jar
+bin/
+
+# Configurazioni Visual Studio Code
+.vscode/
+
+# Dati della rubrica
+informazioni/
+informazioni.txt
+
+# Credenziali
+credenziali.properties
+credenziali_database.properties
+.env
+
+# File temporanei
+*.tmp
+*.log
