@@ -44,7 +44,6 @@ public class FinestraRubrica extends JFrame {
 
         add(new JScrollPane(tabella), BorderLayout.CENTER);
 
-        // Barra degli strumenti
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
 
@@ -76,11 +75,20 @@ public class FinestraRubrica extends JFrame {
 
     private boolean salvaNuovaPersona(Persona persona) {
 
-        if (!rubrica.aggiungiPersona(persona)) {
-            mostraErrore(
-                "Dati non validi oppure contatto già presente."
-            );
-            return false;
+        EsitoInserimento esito = rubrica.aggiungiPersona(persona);
+
+        switch (esito) {
+
+            case DATI_NON_VALIDI:
+                mostraErrore("I dati inseriti non sono validi.");
+                return false;
+
+            case PERSONA_GIA_PRESENTE:
+                mostraErrore("La persona è già presente nella rubrica.");
+                return false;
+
+            case SUCCESSO:
+                break;
         }
 
         try {
@@ -116,16 +124,29 @@ public class FinestraRubrica extends JFrame {
         editor.setVisible(true);
     }
 
-    private boolean salvaModifica(Persona originale,
-                                 Persona modificata) {
+
+    private boolean salvaModifica(Persona originale, Persona modificata) {
 
         Persona precedente = copiaPersona(originale);
 
-        if (!rubrica.modificaPersona(originale, modificata)) {
-            mostraErrore(
-                "Dati non validi oppure contatto duplicato."
-            );
-            return false;
+        EsitoModifica esito = rubrica.modificaPersona(originale, modificata);
+
+        switch (esito) {
+
+            case DATI_NON_VALIDI:
+                mostraErrore("I dati inseriti non sono validi.");
+                return false;
+
+            case PERSONA_GIA_PRESENTE:
+                mostraErrore("La persona è già presente nella rubrica.");
+                return false;
+
+            case PERSONA_NON_TROVATA:
+                mostraErrore("La persona da modificare non è presente nella rubrica.");
+                return false;
+
+            case SUCCESSO:
+                break;
         }
 
         try {
@@ -134,11 +155,13 @@ public class FinestraRubrica extends JFrame {
             return true;
 
         } catch (IOException e) {
+
             rubrica.modificaPersona(originale, precedente);
 
             mostraErrore(
                 "Errore durante il salvataggio: " + e.getMessage()
             );
+
             return false;
         }
     }
@@ -179,8 +202,7 @@ public class FinestraRubrica extends JFrame {
             rubrica.aggiungiPersona(persona);
 
             mostraErrore(
-                "Errore durante l'eliminazione: " +
-                e.getMessage()
+                "Errore durante l'eliminazione: " + e.getMessage()
             );
         }
     }

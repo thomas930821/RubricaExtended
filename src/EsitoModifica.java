@@ -1,0 +1,6 @@
+public enum EsitoModifica {
+    SUCCESSO,
+    DATI_NON_VALIDI,
+    PERSONA_GIA_PRESENTE,
+    PERSONA_NON_TROVATA
+}

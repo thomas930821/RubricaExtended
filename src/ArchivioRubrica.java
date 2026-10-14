@@ -59,10 +59,25 @@ public class ArchivioRubrica {
                             dati[2]
                         );
 
-                        if (!rubrica.aggiungiPersona(persona)) {
-                            System.err.println(
-                                "Contatto non valido o duplicato: " + file
-                            );
+                        EsitoInserimento esito =
+                            rubrica.aggiungiPersona(persona);
+
+                        switch (esito) {
+
+                            case DATI_NON_VALIDI:
+                                System.err.println(
+                                    "Contatto non valido: " + file
+                                );
+                                break;
+
+                            case PERSONA_GIA_PRESENTE:
+                                System.err.println(
+                                    "Contatto duplicato: " + file
+                                );
+                                break;
+
+                            case SUCCESSO:
+                                break;
                         }
 
                     } catch (NumberFormatException e) {

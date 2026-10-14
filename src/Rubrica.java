@@ -11,21 +11,18 @@ public class Rubrica {
         this.persone = new ArrayList<>();
     }
 
-    public boolean aggiungiPersona(Persona persona) {
-        if (persona == null) {
-            return false;
-        }
-
+    public EsitoInserimento aggiungiPersona(Persona persona) {
+        
         if (!personaValida(persona)) {
-            return false;
+            return EsitoInserimento.DATI_NON_VALIDI;
         }
 
         if (personaEsistente(persona)) {
-            return false;
+            return EsitoInserimento.PERSONA_GIA_PRESENTE;
         }
 
         persone.add(persona);
-        return true;
+        return EsitoInserimento.SUCCESSO;
     }
 
     private boolean personaEsistente(Persona persona) {
@@ -56,11 +53,11 @@ public class Rubrica {
             return false;
         }
 
-        if (numero == null || !numero.matches("[0-9]+")) {
+        if (numero == null || !numero.matches("[0-9]{6,15}")) {
             return false;
         }
 
-        if (persona.getEta() < 0) {
+        if (persona.getEta() < 0 || persona.getEta() > 100) {
             return false;
         }
 
@@ -75,24 +72,30 @@ public class Rubrica {
         return persone.remove(persona);
     }
 
-    public boolean modificaPersona(Persona originale, Persona modificata) {
 
-        if (originale == null || !personaValida(modificata)) {
-            return false;
+    public EsitoModifica modificaPersona(Persona originale, Persona modificata) {
+
+        if (!personaValida(modificata)) {
+            return EsitoModifica.DATI_NON_VALIDI;
+        }
+
+        if (originale == null) {
+            return EsitoModifica.PERSONA_NON_TROVATA;
         }
 
         boolean presente = false;
 
         for (Persona p : persone) {
+
             if (p == originale) {
                 presente = true;
             } else if (p.equals(modificata)) {
-                return false;
+                return EsitoModifica.PERSONA_GIA_PRESENTE;
             }
         }
 
         if (!presente) {
-            return false;
+            return EsitoModifica.PERSONA_NON_TROVATA;
         }
 
         originale.setNome(modificata.getNome());
@@ -101,7 +104,7 @@ public class Rubrica {
         originale.setNumero(modificata.getNumero());
         originale.setEta(modificata.getEta());
 
-        return true;
+        return EsitoModifica.SUCCESSO;
     }
 
     public List<Persona> getPersone() {
